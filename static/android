@@ -1,0 +1,19 @@
++/Users/zz/work/onion
+ls -lah
+git stash
+git fetch origin dev
+git rebase origin/dev
+git stash pop
+npm run staging
+cp -R dist/h5/ /Users/zz/work/onion-android2/app/src/main/assets/www
++ /Users/zz/work/onion-android2
+ls -lah
+git stash
+git fetch origin master
+git rebase origin/master
+git stash pop
+git stash pop stash@{0}
+gradle app:assembleDebug
+git stash push -m envfile app/src/main/java/com/cn/capricorn/constants/AppVariableConstants.java
+cp app/build/outputs/apk/route_anroid_01/debug/app-route_anroid_01-debug.apk /Users/zz/go/src/zeus/static/file/
+:>1:<http://192.168.3.11:9090/assets/file/app-route_anroid_01-debug.apk

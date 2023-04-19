@@ -1,0 +1,23 @@
++/Users/zz/work/onion-mac-h5/
+ls -lah
+git stash
+git fetch origin dev
+git rebase origin/dev
+git stash pop || true
+npm run s h5
+cp -R dist/h5/ /Users/zz/work/onion-mac/Runner/dist/
++/Users/zz/work/onion-mac/
+ls -lah
+git stash
+git fetch origin master
+git rebase origin/master
+git stash pop
+fastlane gym --scheme Runner || true
+mv OnionVPN.app 洋葱加速器.app
+mkdir app/
+mv 洋葱加速器.app app/
+bash /Users/zz/go/src/zeus/static/mac.sh
+cp 洋葱加速器.dmg /Users/zz/go/src/zeus/static/file/
+rm OnionVPN.app.dSYM.zip
+rm -rf app/
+:>1:<http://192.168.3.11:9090/assets/file/洋葱加速器.dmg

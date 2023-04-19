@@ -1,0 +1,12 @@
++/Users/zz/work/onion-windows/
+ls -lah
+git stash
+git fetch origin dev
+git rebase origin/dev
+git stash pop
+npm run build:win64
+cp -R bin3 build/win-unpacked/
+zip -r onion-windows.zip build/win-unpacked
+cp -R onion-windows.zip build/win-unpacked /Users/zz/go/src/zeus/static/file/
+rm onion-windows.zip
+:>1:<http://192.168.3.11:9090/assets/file/onion-windows.zip

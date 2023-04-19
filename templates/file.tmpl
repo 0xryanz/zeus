@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Zeus SAAS</title>
+  <link rel="stylesheet" href="assets/app.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/98.css" />
+ <body>
+    <div class="box">
+        <div class="window" style="width: 400px">
+        <div class="title-bar">
+            <div class="title-bar-text">Install package file list</div>
+            <div class="title-bar-controls">
+            <button aria-label="Minimize"></button>
+            <button aria-label="Maximize"></button>
+            <button aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="window-body">
+            <table>
+            <caption>安装包列表 <a href="assets/home.html" style="color: white;">返回</a></caption>
+            <thead>
+                <tr>
+                <th scope="col">文件名</th>
+                <th scope="col">大小(MB)</th>
+                <th scope="col">打包时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range $index, $file := .files }}
+                <tr>
+                        <td><a href="http://192.168.3.11:9090/assets/file/{{ $file.Name }}">{{ $file.Name }}</a></td>
+                        <td>{{ $file.Size }}</td>
+                        <td>{{ $file.ModTime }}</td>
+                    </tr>
+                {{ end }}
+            </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+appname: "zeus"
+
+output: ./zeus
+
+#watch_exts:
+#    - .yml
+
+# cmd_args:
+    # - -config_file=docker_ss_data/server_config.json
+
+# envs:
+
+vendor_watch: false
+
+#excluded_paths:
+#    - path
+
+#build_tags: ""
+
+disable_run: false

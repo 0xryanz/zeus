@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Zeus SAAS</title>
+  <link rel="stylesheet" href="./app.css">
+  <link rel="stylesheet" href="https://unpkg.com/98.css" />
+</head>
+<body>
+  <div class="box" id="packaging-app">
+    <div>
+      <select>
+        <option>洋葱</option>
+      </select>
+      <select>
+        <option>测试</option>
+      </select>
+      <button v-on:click="send">Android</button>
+      <button v-on:click="send">IOS</button>
+      <button v-on:click="send">Windows</button>
+      <button v-on:click="send">MAC</button>
+      <button v-on:click="clear">清除</button>
+      <button v-on:click="file">安装包</button>
+    </div>
+
+    <div class="window">
+      <div class="title-bar">
+        <div class="title-bar-text">Package the output display window, current status : <span style="color:red" id="status" v-model="status">{{status}}</span></div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body">
+        <textarea id="terminal" cols="100" rows="60" v-model="output">{{output}}</textarea>
+      </div>
+    </div>
+    
+    <p>Tips: 打包项目耗时不同，请耐心等待，如果打包完成将会自动下载, 如若打包失败，请提供下方日志给相关开发人员</p>
+    <p>power by vpn.az</p>
+  </div>
+
+  <script src="./zvue/observer.js"></script>
+  <script src="./zvue/watcher.js"></script>
+  <script src="./zvue/compile.js"></script>
+  <script src="./zvue/mvvm.js"></script>
+  <script type="text/javascript">
+    // (function() {var a = new Date(); debugger; return new Date() - a > 100;}())
+
+    let sock = null
+    let downloadUrl = null
+    const wsuri = "ws://192.168.3.11:9090/ws/pack"
+    const terminal = document.getElementById("terminal")
+    const status = document.getElementById("status")
+
+    function notification(message = '') {
+      let notice = null
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+      }
+      else if (Notification.permission === "granted") {
+        notice = new Notification("打包", {body: message});
+      }
+      else if (Notification.permission !== 'denied') {
+        Notification.requestPermission(function (permission) {
+          if (permission === "granted") {
+            notice = new Notification("打包", {body: message});
+          }
+        })
+      }
+      notice.onclick = function(event) {
+        window.open(downloadUrl)
+      }
+    }
+
+    window.onload = function() {
+      sock = new WebSocket(wsuri);
+      sock.onopen = function() {
+        console.log("connected to " + wsuri);
+      }
+      sock.onclose = function(e) {
+        console.log("connection closed (" + e.code + ")");
+      }
+      sock.onmessage = function(e) {
+        if (event.data instanceof Blob) {
+          reader = new FileReader();
+          reader.onload = () => {
+            let data = reader.result
+            console.log(data)
+            let completed = data.startsWith(":>")
+            if (completed) { 
+              status.textContent="打包完成"
+              let index = data.indexOf('<')
+              downloadUrl = data.slice(index+1)
+              window.open(downloadUrl)
+              notification(downloadUrl)
+            }
+            terminal.value += data;
+            terminal.scrollTop = terminal.scrollHeight
+          }
+          reader.readAsText(e.data);
+        } 
+      }
+    }
+
+    const vm = new Zvue({
+      el: '#packaging-app',
+      data: {
+        output: "",
+        platform: ["", "Android", "IOS", "Windows", "MAC"],
+        status: "未开始"
+      },
+      computed: {
+      },
+      methods: {
+        send: function(e) {
+          this.output = ''
+          let sign = this.platform.findIndex(el => el == e.target.textContent);
+          sock.send(sign)
+          this.status = "打包中"
+        },
+        clear: function() {
+          this.output = ''
+          terminal.value = ''
+        },
+        file: function() {
+          window.location.href="/file"
+        }
+      }
+    })
+
+  </script>
+</body>
+</html>
